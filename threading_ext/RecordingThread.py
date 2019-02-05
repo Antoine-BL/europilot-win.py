@@ -20,7 +20,7 @@ class RecordingThread(PausableThread):
         print(session_number)
 
     def run(self):
-        monitor = {"top": 40, "left": 0, "width": 800, "height": 640}
+        monitor = {"top": 0, "left": 0, "width": 1024, "height": 768}
         frames = 0
         last_time = time.time()
 
@@ -48,7 +48,8 @@ class RecordingThread(PausableThread):
         if len(self.training_data) % 100 == 0:
             print(len(self.training_data))
 
-            if len(self.training_data) % 500 == 0:
+            if len(self.training_data) == 500:
                 np.save(self.training_data_path.format(self.session_number), self.training_data)
                 print('saved_data in file nb {}'.format(self.session_number))
                 self.session_number += 1
+                self.training_data = []
