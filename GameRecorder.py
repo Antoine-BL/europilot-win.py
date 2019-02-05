@@ -1,7 +1,7 @@
 """Input recorder for XBOX360 controller.
 (Modified from https://raw.githubusercontent.com/zeth/inputs/master/examples/jstest.py)"""
+import inputs
 
-DATA_BASEDIR = 'data'
 
 TRIGGER_MAX = 255
 JOY_MAX = 32767
@@ -20,6 +20,7 @@ TRIGGERS = [
 ]
 
 EVENT_ABB = (
+    # Absolute Events ======================
     #JoySticks
     ('Absolute-ABS_Y', 'LSY'),
     ('Absolute-ABS_X', 'LSX'),
@@ -34,6 +35,7 @@ EVENT_ABB = (
     ('Absolute-ABS_HAT0X', 'HX'),
     ('Absolute-ABS_HAT0Y', 'HY'),
 
+    # Button Events ========================
     # Face Buttons
     ('Key-BTN_NORTH', 'N'),
     ('Key-BTN_EAST', 'E'),
@@ -88,7 +90,6 @@ class GameRecorder(object):
             raise inputs.UnpluggedError("No gamepad found.")
 
     def handle_unknown_event(self, event, key):
-        print(event, key)
         """Deal with unknown events."""
         if event.ev_type == 'Key':
             new_abbv = 'B' + str(self._other)
@@ -156,6 +157,9 @@ class GameRecorder(object):
         difference = self.abs_state[abbv] - self.old_abs_state[abbv]
         if (abs(difference)) > MIN_ABS_DIFFERENCE:
             print(self.format_state())
+
+    def flattened_state(self):
+        return list(self.abs_state.values()).append(self.btn_state.values())
 
     def process_events(self):
         try:

@@ -30,8 +30,6 @@ class KeyboardTracker(PausableThread):
         elif event.code in self.pressed_keys and event.state == 0:
             self.pressed_keys.remove(event.code)
 
-        print(self.check_for_kill())
-
     def check_for_kill(self):
         return KILL_KEY_COMBINATION <= self.pressed_keys
 

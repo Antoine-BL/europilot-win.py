@@ -1,18 +1,12 @@
-import cv2
-
 from threading_ext.PausableThread import PausableThread
 
 
 class GamePadTracker(PausableThread):
-    def __init__(self, jstest):
+    def __init__(self, recorder):
         super(GamePadTracker, self).__init__()
-        self.jstest = jstest
+        self.recorder = recorder
 
     def run(self):
         while not self.killed:
-            self.jstest.process_events()
-            if self.jstest.btn_state['E'] == 1:
-                cv2.destroyAllWindows()
-                break
-
+            self.recorder.process_events()
             self.sleep_if_paused()
