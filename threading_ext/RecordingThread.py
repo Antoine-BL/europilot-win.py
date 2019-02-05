@@ -20,7 +20,7 @@ class RecordingThread(PausableThread):
         print(session_number)
 
     def run(self):
-        monitor = {"top": 0, "left": 0, "width": 1024, "height": 768}
+        monitor = {"top": 40, "left": 0, "width": 1024, "height": 728}
         frames = 0
         last_time = time.time()
 
@@ -38,7 +38,6 @@ class RecordingThread(PausableThread):
 
                 if time.time() - last_time >= 1:
                     print('fps: {}'.format(frames / (time.time() - last_time)))
-                    print('data points: {}'.format(len(self.training_data)))
                     last_time = time.time()
                     frames = 0
 

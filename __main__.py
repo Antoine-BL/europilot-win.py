@@ -54,7 +54,7 @@ def main():
 
 def find_session_num(data_path):
     session_number = 1
-    while not True:
+    while True:
         file_name = os.path.join(data_path, DATA_FILENAME.format(session_number))
 
         if os.path.isfile(file_name):
