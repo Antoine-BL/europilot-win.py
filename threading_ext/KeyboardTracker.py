@@ -4,6 +4,7 @@ from threading_ext.PausableThread import PausableThread
 
 KILL_KEY_COMBINATION = {'KEY_LEFTCTRL', 'KEY_LEFTSHIFT', 'KEY_Q'}
 PAUSE_KEY_COMBINATION = {'KEY_LEFTCTRL', 'KEY_LEFTSHIFT', 'KEY_P'}
+REWIND_KEY_COMBINATION = {'KEY_LEFTCTRL', 'KEY_LEFTSHIFT', 'KEY_D'}
 
 
 class KeyboardTracker(PausableThread):
@@ -35,3 +36,6 @@ class KeyboardTracker(PausableThread):
 
     def check_for_pause(self):
         return PAUSE_KEY_COMBINATION <= self.pressed_keys
+
+    def check_for_rewind(self):
+        return REWIND_KEY_COMBINATION <= self.pressed_keys

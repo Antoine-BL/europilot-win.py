@@ -37,6 +37,7 @@ def main():
     for thread in threads:
         thread.start()
 
+    holding_down = False
     while True:
         if keyboard_tracker_thread.check_for_kill():
             print('killing all threads')
@@ -44,18 +45,28 @@ def main():
                 thread.kill()
             break
 
-        if keyboard_tracker_thread.check_for_pause():
+        if not holding_down and keyboard_tracker_thread.check_for_pause():
             print('pausing/unpausing threads')
             gamepad_tracker_thread.pause()
             screenshot_thread.pause()
+            holding_down = True
+        elif not holding_down and keyboard_tracker_thread.check_for_rewind():
+            print('Oops, let\'s forget that last part')
+            screenshot_thread.rewind()
+            holding_down = True
+        elif holding_down \
+                and not keyboard_tracker_thread.check_for_rewind()\
+                and not keyboard_tracker_thread.check_for_rewind():
+            holding_down = False
 
-        time.sleep(0.5)
+        time.sleep(0.1)
+
 
 
 def find_session_num(data_path):
     session_number = 1
     while True:
-        file_name = os.path.join(data_path, DATA_FILENAME.format(session_number))
+        file_name = data_path.format(session_number)
 
         if os.path.isfile(file_name):
             session_number += 1

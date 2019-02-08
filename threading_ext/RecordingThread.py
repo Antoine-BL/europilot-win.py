@@ -1,4 +1,4 @@
-import os
+import asyncio
 import time
 
 import numpy as np
@@ -21,27 +21,20 @@ class RecordingThread(PausableThread):
 
     def run(self):
         monitor = {"top": 40, "left": 0, "width": 1024, "height": 728}
-        frames = 0
-        last_time = time.time()
+        ns_to_ms = 1000000
 
         with mss() as sct:
             while not self.killed:
-                frames += 1
+                start_time_ms = time.time_ns() * ns_to_ms
 
                 screen = np.asarray(sct.grab(monitor))
                 screen = cv2.resize(screen, (480, 270))
                 screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
                 self.training_data.append([screen, self.recorder.flattened_state()])
-
                 self.sleep_if_paused()
-
-                if time.time() - last_time >= 1:
-                    print('fps: {}'.format(frames / (time.time() - last_time)))
-                    last_time = time.time()
-                    frames = 0
-
                 self.save_if_necessary()
+                self.wait(start_time_ms)
 
     def save_if_necessary(self):
         if len(self.training_data) % 100 == 0:
@@ -52,3 +45,15 @@ class RecordingThread(PausableThread):
                 print('saved_data in file nb {}'.format(self.session_number))
                 self.session_number += 1
                 self.training_data = []
+
+    def wait(self, start_time_ms: int):
+        delay_ms = 100
+
+        end_time_ms = time.time_ns()
+        duration_ms = end_time_ms - start_time_ms
+        print('loop duration: {}ms'.format(duration_ms))
+        time.sleep(max(delay_ms - duration_ms, 0))
+
+    def rewind(self):
+        self.session_number -= 1
+        self.training_data = []

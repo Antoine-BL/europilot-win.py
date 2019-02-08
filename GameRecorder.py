@@ -159,7 +159,16 @@ class GameRecorder(object):
             print(self.format_state())
 
     def flattened_state(self):
-        return list(self.abs_state.values()).append(self.btn_state.values())
+        abs_input_list = list(self.abs_state.values())
+        btn_input_list = list(self.btn_state.values())
+
+        for i in range(4):
+            abs_input_list[i] = abs_input_list[i] / JOY_MAX
+
+        abs_input_list[4] = abs_input_list[4] / TRIGGER_MAX
+        abs_input_list[5] = abs_input_list[5] / TRIGGER_MAX
+
+        return abs_input_list + btn_input_list
 
     def process_events(self):
         try:
